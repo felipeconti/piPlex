@@ -1,0 +1,118 @@
+HOSTNAME="${HOSTNAME:-`hostname`}"
+TZ="${TZ:-America/Sao_Paulo}"
+ADVERTISE_IP="${ADVERTISE_IP:-"http://`hostname`:8080/"}"
+PLEX_CLAIM="${PLEX_CLAIM:-}"
+PGID="${PGID:-0}"
+PUID="${PUID:-0}"
+MEDIA="${MEDIA:-/media/hd}"
+
+DNS_UPDATER="${DNS_UPDATER:-false}"
+
+DNS_API_KEY="${DNS_API_KEY:-xxxxxxxxxx}"
+DNS_DOMAIN_NAME="${DNS_DOMAIN_NAME:-felipeconti.com.br}"
+DNS_RECORD_TYPE="${DNS_RECORD_TYPE:-A}"
+DNS_RECORD_NAME="${DNS_RECORD_NAME:-`hostname`}"
+DNS_INTERVAL="${DNS_INTERVAL:-60}"
+
+#Use networkmode with eth0 to get local ip address
+DNS_NETWORK_MODE="${DNS_NETWORK_MODE:-}"
+DNS_LOCAL_INTERFACE="${DNS_LOCAL_INTERFACE:-}"
+
+cat << EOF
+version: '2.1'
+
+services:
+  nginx:
+    image: nginx
+    container_name: nginx
+    restart: always
+    mem_limit: 50m
+    cpu_shares: 10
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/certs:/etc/ssl/certs
+    external_links:
+      - plex
+      - transmission
+    ports:
+      - 8080:80/tcp
+#      - 443:443/tcp
+      
+  plex:
+    image: felipeconti/rpi-plex
+    #image: lsioarmhf/plex
+    container_name: plex
+    restart: always
+    environment:
+      - HOSTNAME="$HOSTNAME"
+      - TZ="$TZ"
+      - ADVERTISE_IP="$ADVERTISE_IP"
+      - PLEX_CLAIM="$PLEX_CLAIM"
+#    ports:
+#      - 32400:32400/tcp
+#      - 32400:32400/tcp
+#      - 3005:3005/tcp
+#      - 8324:8324/tcp
+#      - 32469:32469/tcp
+#      - 1900:1900/udp
+#      - 32410:32410/udp
+#      - 32412:32412/udp
+#      - 32413:32413/udp
+#      - 32414:32414/udp
+    volumes:
+      - ./plex:/config
+      - $MEDIA:/data
+
+  transmission:
+    image: lsioarmhf/transmission
+    container_name: transmission
+    restart: always
+    mem_limit: 100m
+    cpu_shares: 50
+    environment:
+      - TZ="$TZ"
+      - PGID=$PGID
+      - PUID=$PUID
+    ports:
+#      - 9091:9091
+      - 51413:51413/udp
+    volumes:
+      - ./transmission:/config
+      - $MEDIA:/downloads/complete
+      - $MEDIA/incomplete:/downloads/incomplete
+#      - ./torrents:/watch
+EOF
+
+if [ $DNS_UPDATER == true ]
+then
+cat << EOF
+
+  updater:
+    image: rafaelquines/dynip-do-dns-updater:rpi
+    container_name: dns_updater
+    restart: always
+EOF
+if [ ! -z $DNS_NETWORK_MODE ]
+then
+cat << EOF
+    network_mode: $DNS_NETWORK_MODE
+EOF
+fi
+cat << EOF
+    mem_limit: 50m
+    cpu_shares: 20
+    environment:
+      - DO_API_KEY=$DNS_API_KEY
+      - DOMAIN_NAME=$DNS_DOMAIN_NAME
+      - RECORD_TYPE=$DNS_RECORD_TYPE
+      - RECORD_NAME=$DNS_RECORD_NAME
+      - INTERVAL=$DNS_INTERVAL
+EOF
+if [ ! -z $DNS_LOCAL_INTERFACE ]
+then
+cat << EOF
+      - LOCAL_INTERFACE=$DNS_LOCAL_INTERFACE
+EOF
+fi
+fi
