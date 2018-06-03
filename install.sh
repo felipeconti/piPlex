@@ -41,7 +41,7 @@ case $KERNEL in
 esac
 
 sh_c='sh -c'
-if [ "$user" != 'root' ]; then
+if [ "$CURRENT_USER" != 'root' ]; then
   if command_exists sudo; then
     sh_c='sudo -E sh -c'
   elif command_exists su; then
@@ -65,7 +65,7 @@ set +x
 output "Install/Upgrade docker"
 curl -SsL get.docker.com | sh
 
-if [ "$user" != 'root' ]; then
+if [ "$CURRENT_USER" != 'root' ]; then
   output "Add current user to docker group"
   set -x
   $sh_c "usermod -aG docker "$CURRENT_USER
