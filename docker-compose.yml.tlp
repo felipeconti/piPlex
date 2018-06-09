@@ -3,18 +3,13 @@ version: '2.1'
 
 services:
   nginx:
-    image: nginx
+    image: felipeconti/rpi-plex-nginx
     container_name: nginx
     restart: always
     mem_limit: 50m
     cpu_shares: 10
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./nginx/certs:/etc/ssl/certs
     external_links:
       - plex
-      - transmission
     ports:
       - 8080:80/tcp
 #      - 443:443/tcp
