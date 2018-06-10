@@ -40,12 +40,12 @@ case $KERNEL in
     ;;
 esac
 
-sh_c='sh -c'
+sh_c='bash -c'
 if [ "$CURRENT_USER" != 'root' ]; then
   if command_exists sudo; then
-    sh_c='sudo -E sh -c'
+    sh_c='sudo -E bash -c'
   elif command_exists su; then
-    sh_c='su -c'
+    sh_c='bash -c'
   else
     output "Error: this installer needs the ability to run commands as root. We are unable to find either "sudo" or "su" available to make this happen."
     exit 1
