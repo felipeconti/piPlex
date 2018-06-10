@@ -3,24 +3,24 @@ set -e
 
 # install script for piPlex
 
-HOSTNAME=`hostname`
-TZ="America/Sao_Paulo"
-ADVERTISE_IP="http://`hostname`:8080/"
-PLEX_CLAIM=""
-PGID=0
-PUID=0
-MEDIA="/media/hd"
+export HOSTNAME=`hostname`
+export TZ="America/Sao_Paulo"
+export ADVERTISE_IP="http://`hostname`:8080/"
+export PLEX_CLAIM=""
+export PGID=0
+export PUID=0
+export MEDIA="/media/hd"
 
-DNS_UPDATER=false
+export DNS_UPDATER=false
 
-DNS_API_KEY="xxxxxxxxxx"
-DNS_DOMAIN_NAME="example.com"
-DNS_RECORD_TYPE="A"
-DNS_RECORD_NAME=`hostname`
-DNS_INTERVAL=60
+export DNS_API_KEY="xxxxxxxxxx"
+export DNS_DOMAIN_NAME="example.com"
+export DNS_RECORD_TYPE="A"
+export DNS_RECORD_NAME=`hostname`
+export DNS_INTERVAL=60
 #Use network mode with eth0 to get local ip address
-DNS_NETWORK_MODE=
-DNS_LOCAL_INTERFACE=
+export DNS_NETWORK_MODE=
+export DNS_LOCAL_INTERFACE=
 
 KERNEL=$(uname -s)
 CURRENT_USER=$(whoami)
@@ -140,9 +140,6 @@ then
   $sh_c "rm $HOME_USER/docker-compose.yml.tlp"
   $sh_c "chown $CURRENT_USER:$CURRENT_USER $HOME_USER/docker-compose.yml"
   set +x
-
-  output "docker-compose.yml"
-  $sh_c "cat $HOME_USER/docker-compose.yml"
 
   output ""
   output ""

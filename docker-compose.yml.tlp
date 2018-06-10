@@ -57,12 +57,12 @@ services:
       - $MEDIA:/downloads/complete
       - $MEDIA/incomplete:/downloads/incomplete
 #      - ./torrents:/watch
+
 EOF
 
-if [ $DNS_UPDATER ]
+if [ $DNS_UPDATER == true ]
 then
 cat << EOF
-
   updater:
     image: rafaelquines/dynip-do-dns-updater:rpi
     container_name: dns_updater
