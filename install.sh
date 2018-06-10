@@ -90,40 +90,43 @@ $sh_c "curl -SsL https://raw.githubusercontent.com/bcicen/ctop/master/install.sh
 if [ ! -f $HOME_USER/docker-compose.yml ]
 then
   output "Set variables to use on docker-compose template"
-  # echo "Name: "$name
-  echo -n "Hostname (Default: $HOSTNAME):"
-  read HOSTNAME
-  echo -n "TZ (Default: $TZ):"
-  read TZ
-  echo -n "ADVERTISE_IP (Default: $ADVERTISE_IP):"
-  read ADVERTISE_IP
-  echo -n "PLEX_CLAIM (Default: $PLEX_CLAIM):"
-  read PLEX_CLAIM
-  echo -n "PGID (Default: $PGID):"
-  read PGID
-  echo -n "PUID (Default: $PUID):"
-  read PUID
-  echo -n "MEDIA (Default: $MEDIA):"
-  read MEDIA
 
-  echo -n "DNS_UPDATER (Default: $DNS_UPDATER):"
-  read DNS_UPDATER
+  read -p "Hostname (Default: $HOSTNAME): " AUX
+  HOSTNAME=${AUX:-$HOSTNAME}
+  read -p "TZ (Default: $TZ): " AUX
+  TZ=${AUX:-$TZ}
+  read -p "ADVERTISE_IP (Default: $ADVERTISE_IP): " AUX
+  ADVERTISE_IP=${AUX:-$ADVERTISE_IP}
+  read -p "PLEX_CLAIM (Default: $PLEX_CLAIM): " AUX
+  PLEX_CLAIM=${AUX:-$PLEX_CLAIM}
+  read -p "PGID (Default: $PGID): " AUX
+  PGID=${AUX:-$PGID}
+  read -p "PUID (Default: $PUID): " AUX
+  PUID=${AUX:-$PUID}
+  read -p "MEDIA (Default: $MEDIA): " AUX
+  MEDIA=${AUX:-$MEDIA}
 
-  echo -n "DNS_API_KEY (Default: $DNS_API_KEY):"
-  read DNS_API_KEY
-  echo -n "DNS_DOMAIN_NAME (Default: $DNS_DOMAIN_NAME):"
-  read DNS_DOMAIN_NAME
-  echo -n "DNS_RECORD_TYPE (Default: $DNS_RECORD_TYPE):"
-  read DNS_RECORD_TYPE
-  echo -n "DNS_RECORD_NAME (Default: $DNS_RECORD_NAME):"
-  read DNS_RECORD_NAME
-  echo -n "DNS_INTERVAL (Default: $DNS_INTERVAL):"
-  read DNS_INTERVAL
-  #Use network mode with eth0 to get local ip address
-  echo -n "DNS_NETWORK_MODE (Default: $DNS_NETWORK_MODE):"
-  read DNS_NETWORK_MODE
-  echo -n "DNS_LOCAL_INTERFACE (Default: $DNS_LOCAL_INTERFACE):"
-  read DNS_LOCAL_INTERFACE
+  read -p "DNS_UPDATER (Default: $DNS_UPDATER): " AUX
+  DNS_UPDATER=${AUX:-$DNS_UPDATER}
+
+  if [ $DNS_UPDATER == true ]
+  then
+    read -p "DNS_API_KEY (Default: $DNS_API_KEY): " AUX
+    DNS_API_KEY=${AUX:-$DNS_API_KEY}
+    read -p "DNS_DOMAIN_NAME (Default: $DNS_DOMAIN_NAME): " AUX
+    DNS_DOMAIN_NAME=${AUX:-$DNS_DOMAIN_NAME}
+    read -p "DNS_RECORD_TYPE (Default: $DNS_RECORD_TYPE): " AUX
+    DNS_RECORD_TYPE=${AUX:-$DNS_RECORD_TYPE}
+    read -p "DNS_RECORD_NAME (Default: $DNS_RECORD_NAME): " AUX
+    DNS_RECORD_NAME=${AUX:-$DNS_RECORD_NAME}
+    read -p "DNS_INTERVAL (Default: $DNS_INTERVAL): " AUX
+    DNS_INTERVAL=${AUX:-$DNS_INTERVAL}
+    #Use network mode with eth0 to get local ip address
+    read -p "DNS_NETWORK_MODE (Default: $DNS_NETWORK_MODE): " AUX
+    DNS_NETWORK_MODE=${AUX:-$DNS_NETWORK_MODE}
+    read -p "DNS_LOCAL_INTERFACE (Default: $DNS_LOCAL_INTERFACE): " AUX
+    DNS_LOCAL_INTERFACE=${AUX:-$DNS_LOCAL_INTERFACE}
+  fi
 
   output "Download docker-compose template"
   tlp_url="https://raw.githubusercontent.com/felipeconti/piPlex/master/docker-compose.yml.tlp"
@@ -138,12 +141,19 @@ then
   $sh_c "chown $CURRENT_USER:$CURRENT_USER $HOME_USER/docker-compose.yml"
   set +x
 
+  output "docker-compose.yml"
+  $sh_c "cat $HOME_USER/docker-compose.yml"
+
   output ""
   output ""
   output "Advertise addres: $ADVERTISE_IP"
   output ""
   output "Don't forget to mount the media at $MEDIA"
 fi
+
+output ""
+output "Execute pull of images"
+$sh_c "docker-compose pull"
 
 output ""
 output "Ports for running services"

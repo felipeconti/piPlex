@@ -59,7 +59,7 @@ services:
 #      - ./torrents:/watch
 EOF
 
-if [ $DNS_UPDATER == true ]
+if [ $DNS_UPDATER ]
 then
 cat << EOF
 
