@@ -60,7 +60,7 @@ services:
 
 EOF
 
-if [ $DNS_UPDATER == true ]
+if [ $DNS_UPDATER = true ]
 then
 cat << EOF
   updater:
