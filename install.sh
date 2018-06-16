@@ -85,7 +85,7 @@ fi
 # fi
 
 output "Install/Upgrade ctop"
-$sh_c "curl -SsL https://raw.githubusercontent.com/felipeconti/ctop/master/install.sh | bash"
+$sh_c "curl -SsL https://raw.githubusercontent.com/bcicen/ctop/master/install.sh | bash"
 
 if [ ! -f $HOME_USER/docker-compose.yml ]
 then
