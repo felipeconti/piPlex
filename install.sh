@@ -59,7 +59,7 @@ $sh_c "apt-get -y upgrade -qq >/dev/null"
 $sh_c "apt-get -y dist-upgrade -qq >/dev/null"
 $sh_c "apt-get -y autoremove -qq >/dev/null"
 $sh_c "apt-get -y clean -qq >/dev/null"
-$sh_c "apt-get -y --no-install-recommends install apt-transport-https ca-certificates curl wget -qq >/dev/null"
+$sh_c "apt-get -y --no-install-recommends install apt-transport-https ca-certificates curl wget htop -qq >/dev/null"
 set +x
 
 output "Install/Upgrade docker"
@@ -85,7 +85,7 @@ fi
 # fi
 
 output "Install/Upgrade ctop"
-$sh_c "curl -SsL https://raw.githubusercontent.com/felipeconti/ctop/master/install.sh | bash"
+$sh_c "curl -SsL https://raw.githubusercontent.com/bcicen/ctop/master/install.sh | bash"
 
 if [ ! -f $HOME_USER/docker-compose.yml ]
 then
