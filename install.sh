@@ -62,8 +62,10 @@ $sh_c "apt-get -y clean -qq >/dev/null"
 $sh_c "apt-get -y --no-install-recommends install apt-transport-https ca-certificates curl wget htop -qq >/dev/null"
 set +x
 
-output "Install/Upgrade docker"
-curl -SsL get.docker.com | sh
+if ! command_exists docker; then
+  output "Install docker"
+  curl -SsL get.docker.com | sh
+fi
 
 if [ "$CURRENT_USER" != 'root' ]; then
   output "Add current user to docker group"
